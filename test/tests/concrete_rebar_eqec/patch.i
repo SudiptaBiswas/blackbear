@@ -4,7 +4,10 @@
 
 [Mesh]
   file = gold/patch.e
-  uniform_refine = 0
+  uniform_refine = 1
+[]
+
+[NodalNormals]
 []
 
 [Variables]
@@ -127,18 +130,24 @@
     boundary = 4
     function = t
   []
-  [concrete_bottom_yfix]
-    type = DirichletBC
-    variable = disp_y
-    boundary = 2
-    value = 0
-  []
-  [concrete_bottom_xfix]
-    type = DirichletBC
+  [concrete_top_xdisp]
+    type = FunctionDirichletBC
     variable = disp_x
-    boundary = 2
-    value = 0
+    boundary = 4
+    function = 0
   []
+  # [concrete_bottom_yfix]
+  #   type = DirichletBC
+  #   variable = disp_y
+  #   boundary = 2
+  #   value = 0
+  # []
+  # [concrete_bottom_xfix]
+  #   type = DirichletBC
+  #   variable = disp_x
+  #   boundary = 2
+  #   value = 0
+  # []
 []
 
 [Constraints]
@@ -152,7 +161,8 @@
     displacements = 'disp_x disp_y'
     component = 0
     formulation = penalty
-    model = glued
+    model = bondslip
+    # debug = true
   []
   [rebar_y]
     type = ConcreteRebarConstraint
@@ -164,6 +174,6 @@
     displacements = 'disp_x disp_y'
     component = 1
     formulation = penalty
-    model = glued
+    model = bondslip
   []
 []

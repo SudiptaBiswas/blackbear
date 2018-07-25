@@ -12,6 +12,7 @@
 
 // MOOSE includes
 #include "EqualValueEmbeddedConstraint.h"
+#include "FEProblem.h"
 
 /// Models, currently only supports GLUED and BONDSLIP
 enum Model
@@ -32,14 +33,11 @@ class ConcreteRebarConstraint : public EqualValueEmbeddedConstraint
 {
 public:
   ConcreteRebarConstraint(const InputParameters & parameters);
-
-  /**
-   * Compute the reaction force required to enforce the constraint based on the specified
-   * formulation. The constraint force is computed once per constraint
-   */
+  bool shouldApply() override;
   void computeConstraintForce() override;
 
 protected:
+  virtual void computeTangent();
   virtual Real computeQpResidual(Moose::ConstraintType type) override;
   virtual Real computeQpJacobian(Moose::ConstraintJacobianType type) override;
   virtual Real computeQpOffDiagJacobian(Moose::ConstraintJacobianType type,
@@ -56,10 +54,13 @@ protected:
   std::vector<MooseVariable *> _vars;
   /// Enum used to define the formulation used to impose the constraint
   const Model _model;
+  const bool _debug;
   /// constraint force needed to enforce the constraint
   RealVectorValue _constraint_force;
   /// penalty force for the current constraint
   RealVectorValue _pen_force;
+  RealVectorValue _slave_tangent;
+  bool _bond;
 };
 
 #endif
