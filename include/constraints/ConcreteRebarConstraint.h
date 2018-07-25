@@ -44,16 +44,16 @@ protected:
   virtual Real computeQpJacobian(Moose::ConstraintJacobianType type) override;
   virtual Real computeQpOffDiagJacobian(Moose::ConstraintJacobianType type,
                                         unsigned int jvar) override;
-  const unsigned _component;
-  const unsigned int _mesh_dimension;
-  std::vector<unsigned int> _var_nums;
-  std::vector<MooseVariable *> _vars;
   /**
    * Get the Formulation enum from a case-insensitive string
    * @param name name of the formulation string to be parsed
    * @return Formulation parsed enum of the corresponding formulation, returns INVALID by default
    */
   static Model getModel(std::string name);
+  const unsigned _component;
+  const unsigned int _mesh_dimension;
+  std::vector<unsigned int> _var_nums;
+  std::vector<MooseVariable *> _vars;
   /// Enum used to define the formulation used to impose the constraint
   const Model _model;
   /// constraint force needed to enforce the constraint
