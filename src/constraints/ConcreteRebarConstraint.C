@@ -51,13 +51,6 @@ ConcreteRebarConstraint::ConcreteRebarConstraint(const InputParameters & paramet
   }
 }
 
-bool
-ConcreteRebarConstraint::shouldApply()
-{
-  computeTangent();
-  return EqualValueEmbeddedConstraint::shouldApply();
-}
-
 void
 ConcreteRebarConstraint::computeTangent()
 {
@@ -103,9 +96,7 @@ ConcreteRebarConstraint::computeTangent()
 void
 ConcreteRebarConstraint::reinitConstraint()
 {
-  // compute constraint force once per constraint
-  // if (_component != 0)
-  //   return;
+  computeTangent();
 
   const Node * node = _current_node;
   unsigned int sys_num = _sys.number();

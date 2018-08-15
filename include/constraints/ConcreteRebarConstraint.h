@@ -33,7 +33,6 @@ class ConcreteRebarConstraint : public EqualValueEmbeddedConstraint
 {
 public:
   ConcreteRebarConstraint(const InputParameters & parameters);
-  bool shouldApply() override;
   virtual void reinitConstraint() override;
 
 protected:
