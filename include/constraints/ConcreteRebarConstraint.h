@@ -34,7 +34,7 @@ class ConcreteRebarConstraint : public EqualValueEmbeddedConstraint
 public:
   ConcreteRebarConstraint(const InputParameters & parameters);
   bool shouldApply() override;
-  void computeConstraintForce() override;
+  virtual void reinitConstraint() override;
 
 protected:
   virtual void computeTangent();
@@ -56,7 +56,7 @@ protected:
   const Model _model;
   const bool _debug;
   /// constraint force needed to enforce the constraint
-  RealVectorValue _constraint_force;
+  RealVectorValue _constraint_residual;
   /// penalty force for the current constraint
   RealVectorValue _pen_force;
   RealVectorValue _slave_tangent;

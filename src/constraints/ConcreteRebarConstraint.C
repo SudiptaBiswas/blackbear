@@ -101,7 +101,7 @@ ConcreteRebarConstraint::computeTangent()
 }
 
 void
-ConcreteRebarConstraint::computeConstraintForce()
+ConcreteRebarConstraint::reinitConstraint()
 {
   // compute constraint force once per constraint
   // if (_component != 0)
@@ -124,11 +124,11 @@ ConcreteRebarConstraint::computeConstraintForce()
     case GLUED:
       switch (_formulation)
       {
-        case KINEMATIC:
-          _constraint_force = -res_vec;
+        case Formulation::KINEMATIC:
+          _constraint_residual = -res_vec;
           break;
-        case PENALTY:
-          _constraint_force = _pen_force;
+        case Formulation::PENALTY:
+          _constraint_residual = _pen_force;
           break;
         default:
           mooseError("Invalid formulation");
@@ -139,10 +139,10 @@ ConcreteRebarConstraint::computeConstraintForce()
       switch (_formulation)
       {
         // TODO fill this in
-        case KINEMATIC:
+        case Formulation::KINEMATIC:
           mooseError("Invalid formulation");
           break;
-        case PENALTY:
+        case Formulation::PENALTY:
         {
           const Real capacity = 0.0;
           RealVectorValue constraint_force_tangential =
@@ -152,7 +152,7 @@ ConcreteRebarConstraint::computeConstraintForce()
 
           if (tan_mag > capacity)
           {
-            _constraint_force =
+            _constraint_residual =
                 constraint_force_normal + capacity * constraint_force_tangential / tan_mag;
             _bond = false;
           }
@@ -174,13 +174,13 @@ ConcreteRebarConstraint::computeConstraintForce()
 Real
 ConcreteRebarConstraint::computeQpResidual(Moose::ConstraintType type)
 {
-  Real resid = _constraint_force(_component);
+  Real resid = _constraint_residual(_component);
 
   switch (type)
   {
     case Moose::Slave:
     {
-      if (_formulation == KINEMATIC)
+      if (_formulation == Formulation::KINEMATIC)
       {
         if (_model == GLUED)
           resid += _pen_force(_component);
@@ -218,11 +218,11 @@ ConcreteRebarConstraint::computeQpJacobian(Moose::ConstraintJacobianType type)
         case GLUED:
           switch (_formulation)
           {
-            case KINEMATIC:
+            case Formulation::KINEMATIC:
               curr_jac = (*_jacobian)(_current_node->dof_number(sys_num, _var_nums[_component], 0),
                                       _connected_dof_indices[_j]);
               return -curr_jac + _phi_slave[_j][_qp] * penalty * _test_slave[_i][_qp];
-            case PENALTY:
+            case Formulation::PENALTY:
               return _phi_slave[_j][_qp] * penalty * _test_slave[_i][_qp];
             default:
               mooseError("Invalid formulation");
@@ -230,10 +230,10 @@ ConcreteRebarConstraint::computeQpJacobian(Moose::ConstraintJacobianType type)
         case BONDSLIP:
           switch (_formulation)
           {
-            case KINEMATIC:
+            case Formulation::KINEMATIC:
               // TODO fill this in
               return 0.0;
-            case PENALTY:
+            case Formulation::PENALTY:
             {
               if (!_bond)
                 return _phi_slave[_j][_qp] * _penalty * _test_slave[_i][_qp] *
@@ -254,9 +254,9 @@ ConcreteRebarConstraint::computeQpJacobian(Moose::ConstraintJacobianType type)
         case GLUED:
           switch (_formulation)
           {
-            case KINEMATIC:
+            case Formulation::KINEMATIC:
               return -_phi_master[_j][_qp] * penalty * _test_slave[_i][_qp];
-            case PENALTY:
+            case Formulation::PENALTY:
               return -_phi_master[_j][_qp] * penalty * _test_slave[_i][_qp];
             default:
               mooseError("Invalid formulation");
@@ -264,9 +264,9 @@ ConcreteRebarConstraint::computeQpJacobian(Moose::ConstraintJacobianType type)
         case BONDSLIP:
           switch (_formulation)
           {
-            case KINEMATIC:
+            case Formulation::KINEMATIC:
               return 0.0;
-            case PENALTY:
+            case Formulation::PENALTY:
             {
               if (!_bond)
                 return -_phi_master[_j][_qp] * _penalty * _test_slave[_i][_qp] *
@@ -287,11 +287,11 @@ ConcreteRebarConstraint::computeQpJacobian(Moose::ConstraintJacobianType type)
         case GLUED:
           switch (_formulation)
           {
-            case KINEMATIC:
+            case Formulation::KINEMATIC:
               slave_jac = (*_jacobian)(_current_node->dof_number(sys_num, _var_nums[_component], 0),
                                        _connected_dof_indices[_j]);
               return slave_jac * _test_master[_i][_qp];
-            case PENALTY:
+            case Formulation::PENALTY:
               return -_phi_slave[_j][_qp] * penalty * _test_master[_i][_qp];
             default:
               mooseError("Invalid formulation");
@@ -299,9 +299,9 @@ ConcreteRebarConstraint::computeQpJacobian(Moose::ConstraintJacobianType type)
         case BONDSLIP:
           switch (_formulation)
           {
-            case KINEMATIC:
+            case Formulation::KINEMATIC:
               return 0.0;
-            case PENALTY:
+            case Formulation::PENALTY:
             {
               if (!_bond)
                 return -_test_master[_i][_qp] * _penalty * _phi_slave[_j][_qp] *
@@ -322,9 +322,9 @@ ConcreteRebarConstraint::computeQpJacobian(Moose::ConstraintJacobianType type)
         case GLUED:
           switch (_formulation)
           {
-            case KINEMATIC:
+            case Formulation::KINEMATIC:
               return 0.0;
-            case PENALTY:
+            case Formulation::PENALTY:
               return _test_master[_i][_qp] * penalty * _phi_master[_j][_qp];
             default:
               mooseError("Invalid formulation");
@@ -332,9 +332,9 @@ ConcreteRebarConstraint::computeQpJacobian(Moose::ConstraintJacobianType type)
         case BONDSLIP:
           switch (_formulation)
           {
-            case KINEMATIC:
+            case Formulation::KINEMATIC:
               return 0.0;
-            case PENALTY:
+            case Formulation::PENALTY:
             {
               if (!_bond)
                 return _test_master[_i][_qp] * _penalty * _phi_master[_j][_qp] *
@@ -372,11 +372,11 @@ ConcreteRebarConstraint::computeQpOffDiagJacobian(Moose::ConstraintJacobianType 
     case Moose::MasterSlave:
       switch (_formulation)
       {
-        case KINEMATIC:
+        case Formulation::KINEMATIC:
           slave_jac = (*_jacobian)(_current_node->dof_number(sys_num, _var_nums[_component], 0),
                                    _connected_dof_indices[_j]);
           return slave_jac * _test_master[_i][_qp];
-        case PENALTY:
+        case Formulation::PENALTY:
           return 0.0;
         default:
           mooseError("Invalid formulation");
