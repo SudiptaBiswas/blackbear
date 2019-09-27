@@ -87,7 +87,7 @@
     type = FunctionPresetBC
     variable = disp_x
     boundary = right
-    function = push
+    function = pull
   []
 []
 
@@ -112,15 +112,35 @@
     b_c = 2150
   []
 
-  [stress]
-    type = ComputeDamageStress
+  [./stress]
+    type = ComputeMultipleInelasticStress
+    inelastic_models = 'creep'
     damage_model = damage
-  []
-  [elasticity]
-    type = ComputeIsotropicElasticityTensor
+  [../]
+  # [elasticity]
+  #   type = ComputeIsotropicElasticityTensor
+  #   poissons_ratio = 0.2
+  #   youngs_modulus = 10e9
+  # []
+  [./creep]
+    type = LinearViscoelasticStressUpdate
+  [../]
+  [./logcreep]
+    type = ConcreteLogarithmicCreepModel
     poissons_ratio = 0.2
     youngs_modulus = 10e9
-  []
+    recoverable_youngs_modulus = 10e9
+    recoverable_viscosity = 1
+    long_term_viscosity = 1
+    long_term_characteristic_time = 1
+  [../]
+[]
+
+[UserObjects]
+  [./visco_update]
+    type = LinearViscoelasticityManager
+    viscoelastic_model = logcreep
+  [../]
 []
 
 [Postprocessors]
@@ -162,5 +182,5 @@
 [Outputs]
   exodus = true
   csv = true
-  file_base = mazar_comp
+  file_base = mazar_creep_damage_tension
 []

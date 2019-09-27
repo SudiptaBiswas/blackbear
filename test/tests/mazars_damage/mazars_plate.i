@@ -4,16 +4,18 @@
 # expected hardening/softening behavior.
 
 [GlobalParams]
-  displacements = 'disp_x disp_y disp_z'
+  displacements = 'disp_x disp_y'
 []
 
 [Mesh]
   type = GeneratedMesh
-  dim = 3
-  nx = 1
-  ny = 1
-  nz = 1
-  elem_type = HEX8
+  dim = 2
+  nx = 10
+  ny = 10
+  xmax = 2
+  ymax = 2
+  # nz = 1
+  # elem_type = HEX8
 []
 
 [AuxVariables]
@@ -77,17 +79,17 @@
     boundary = left
     value = 0
   []
-  [symmz]
-    type = PresetBC
-    variable = disp_z
-    boundary = back
-    value = 0
-  []
+  # [symmz]
+  #   type = PresetBC
+  #   variable = disp_z
+  #   boundary = back
+  #   value = 0
+  # []
   [axial_load]
     type = FunctionPresetBC
     variable = disp_x
     boundary = right
-    function = push
+    function = pull
   []
 []
 
@@ -98,7 +100,7 @@
   []
   [pull]
     type = ParsedFunction
-    value = '0.001*t'
+    value = '0.1*t'
   []
 []
 
@@ -110,17 +112,43 @@
     a_c = 0.65
     b_t = 20000
     b_c = 2150
+    use_old_dmage = true
   []
 
-  [stress]
-    type = ComputeDamageStress
+    # [stress]
+    #   type = ComputeDamageStress
+    #   damage_model = damage
+    # []
+  [./stress]
+    type = ComputeMultipleInelasticStress
+    inelastic_models = 'creep'
     damage_model = damage
-  []
-  [elasticity]
-    type = ComputeIsotropicElasticityTensor
+    # use_old_damage = true
+  [../]
+  # [elasticity]
+  #   type = ComputeIsotropicElasticityTensor
+  #   poissons_ratio = 0.2
+  #   youngs_modulus = 10e9
+  # []
+  [./creep]
+    type = LinearViscoelasticStressUpdate
+  [../]
+  [./logcreep]
+    type = ConcreteLogarithmicCreepModel
     poissons_ratio = 0.2
-    youngs_modulus = 10e9
-  []
+    youngs_modulus = 20e9
+    recoverable_youngs_modulus = 10e9
+    recoverable_viscosity = 1
+    long_term_viscosity = 1
+    long_term_characteristic_time = 1
+  [../]
+[]
+
+[UserObjects]
+  [./visco_update]
+    type = LinearViscoelasticityManager
+    viscoelastic_model = logcreep
+  [../]
 []
 
 [Postprocessors]
@@ -154,13 +182,18 @@
   nl_rel_tol = 1e-10
   nl_abs_tol = 1e-8
 
-  dt = 0.001
-  dtmin = 0.0001
-  end_time = 1
+  # dt = 0.1
+  dtmin = 0.01
+  end_time = 10
+  [./TimeStepper]
+    type = LogConstantDT
+    log_dt = 0.1
+    first_dt = 0.1
+  [../]
 []
 
 [Outputs]
   exodus = true
   csv = true
-  file_base = mazar_comp
+  file_base = creep_damage_tension_plate
 []
