@@ -417,6 +417,14 @@
     execute_on = 'timestep_end'
     block = 1
   [../]
+
+  [damage_index]
+    type = MaterialRealAux
+    block = 1
+    variable = damage_index
+    property = damage_index
+    execute_on = timestep_end
+  []
   [./area]
     type = ConstantAux
     block = '2'
@@ -620,7 +628,7 @@
     temperature_unit = Celsius
     max_volumetric_expansion = 2.6e-2
 
-    characteristic_time = 22.9
+    characteristic_time = 20.9
     latency_time = 28.0
     characteristic_activation_energy = 5400.0
     latency_activation_energy = 9400.0
@@ -658,12 +666,14 @@
     type = ConcreteASRMicrocrackingDamage
     residual_youngs_modulus_fraction = 0.1
     block = 1
+    # outputs = Exodus
   []
   [./stress]
     type = ComputeMultipleInelasticStress
     block = 1
     inelastic_models = 'creep'
-    # damage_model = ASR_damage_concrete
+    damage_model = ASR_damage_concrete
+    # outputs = Exodus
   [../]
 
   [truss]
@@ -673,7 +683,7 @@
     temperature = T
     thermal_expansion_coeff = 11.3e-6
     temperature_ref = 10.6
-    # outputs = Exodus
+    # outputs = exodus
   []
 
 []

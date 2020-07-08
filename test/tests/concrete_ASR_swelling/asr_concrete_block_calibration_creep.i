@@ -477,7 +477,7 @@
     cement_type = 1                          #options: 1 2 3 4
     cement_mass = 354.0                      #mass of cement (kg) per m^3 of concrete
     water_to_cement_ratio       = 0.5
-    concrete_cure_time          = 15.0       #curing time in (days)
+    concrete_cure_time          = 28.0       #curing time in (days)
 
     # options available for humidity diffusivity:
     moisture_diffusivity_model = Bazant      #options: Bazant Xi Mensi
@@ -518,33 +518,17 @@
     temperature = T
     activation_temperature = 23.0
   [../]
-  [./stress]
-    type = ComputeMultipleInelasticStress
-    # block = 1
-    inelastic_models = 'creep'
-    # damage_model = damage
-  [../]
-
-  # [ASR_damage_concrete]
-  #   type = ConcreteASRMicrocrackingDamage
-  #   residual_youngs_modulus_fraction = 0.1
-  # []
-  #
-  # [stress_concrete]
-  #   type = ComputeDamageStress
-  #   damage_model = ASR_damage_concrete
-  # []
 
   [ASR_expansion]
     type = ConcreteASREigenstrain
     expansion_type = Anisotropic
 
-    reference_temperature  = 35
+    reference_temperature  = 35.0
     temperature_unit = Celsius
     max_volumetric_expansion = 2.6e-2
 
-    characteristic_time = 22.9
-    latency_time = 64.6
+    characteristic_time = 24.9
+    latency_time = 56.0
     characteristic_activation_energy = 5400.0
     latency_activation_energy = 9400.0
     stress_latency_factor = 1.0
@@ -575,6 +559,19 @@
     stress_free_temperature = 10.6
     eigenstrain_name = thermal_expansion
   []
+
+  [ASR_damage_concrete]
+    type = ConcreteASRMicrocrackingDamage
+    residual_youngs_modulus_fraction = 0.1
+  []
+  [./stress]
+    type = ComputeMultipleInelasticStress
+    # block = 1
+    inelastic_models = 'creep'
+    damage_model = ASR_damage_concrete
+  [../]
+  #
+
 
 []
 
@@ -823,7 +820,7 @@
   line_search = none
   petsc_options_iname = '-pc_type -ksp_gmres_restart'
   petsc_options_value = 'lu       101'
-
+  # start_time = 28
   dt = 50000
   automatic_scaling = true
   # end_time = 12960000
