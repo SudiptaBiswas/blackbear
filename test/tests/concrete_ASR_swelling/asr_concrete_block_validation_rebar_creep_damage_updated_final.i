@@ -1,44 +1,12 @@
-[GlobalParams]
+ [GlobalParams]
   displacements = 'disp_x disp_y disp_z'
-  block = 1
   # volumetric_locking_correction = true
 []
 
 [Mesh]
-  file = concrete_block_mesh.e
-# construct_side_set_from_node_set=true
-  # [gen]
-  #   type = GeneratedMeshGenerator
-  #   dim = 3
-  #   xmin = -0.24
-  #   xmax = 0.24
-  #   ymin = -0.24
-  #   ymax = 0.24
-  #   zmin = -0.24
-  #   zmax = 0.24
-  #   nx = 4
-  #   ny = 4
-  #   nz = 4
-  # []
+  # file = concrete_block_mesh.e
+  file = ASR_block_uniz3l.e
 
-  # [./cnode]
-  #   input = gen
-  #   type = ExtraNodesetGenerator
-  #   coord = '0.0 0.0 0.0'
-  #   new_boundary = 2000
-  # [../]
-  # [./bnode]
-  #   input = cnode
-  #   type = ExtraNodesetGenerator
-  #   coord = '0.0 -0.24 0.0'
-  #   new_boundary = 2005
-  # [../]
-  # [./snode]
-  #   input = bnode
-  #   type = ExtraNodesetGenerator
-  #   coord = '0.24 0.0 0.0'
-  #   new_boundary = 2001
-  # [../]
   # [cont]
   #   type = FileMeshGenerator
   #   file = Block_ASR_Uniax3L.e
@@ -81,63 +49,63 @@
   [./ASR_ex]
     order = CONSTANT
     family = MONOMIAL
-
+    block = 1
   [../]
 
   [./ASR_vstrain]
     order = CONSTANT
     family = MONOMIAL
-
+    block = 1
   [../]
   [./ASR_strain_xx]
     order = CONSTANT
     family = MONOMIAL
-
+    block = 1
   [../]
   [./ASR_strain_yy]
     order = CONSTANT
     family = MONOMIAL
-
+    block = 1
   [../]
   [./ASR_strain_zz]
     order = CONSTANT
     family = MONOMIAL
-
+    block = 1
   [../]
   [./ASR_strain_xy]
     order = CONSTANT
     family = MONOMIAL
-
+    block = 1
   [../]
   [./ASR_strain_yz]
     order = CONSTANT
     family = MONOMIAL
-
+    block = 1
   [../]
   [./ASR_strain_zx]
     order = CONSTANT
     family = MONOMIAL
-
+    block = 1
   [../]
   [./volumetric_strain]
     order = CONSTANT
     family = MONOMIAL
-
+    block = 1
   [../]
   [./thermal_strain_xx]
     order = CONSTANT
     family = MONOMIAL
-
+    block = 1
   [../]
   [./thermal_strain_yy]
     order = CONSTANT
     family = MONOMIAL
-
+    block = 1
   [../]
   [./thermal_strain_zz]
     order = CONSTANT
     family = MONOMIAL
-
+    block = 1
   [../]
   [./thermal_conductivity]
     order = CONSTANT
@@ -171,11 +139,24 @@
     order = CONSTANT
     family = MONOMIAL
   []
+
+  [./area]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./axial_stress]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
+  [./axial_strain]
+    order = CONSTANT
+    family = MONOMIAL
+  [../]
 []
 
 [Modules/TensorMechanics/Master]
   [./concrete]
-
+    block = 1
     # strain = SMALL
     strain = FINITE
     add_variables = true
@@ -185,37 +166,96 @@
   [../]
 []
 
+[Modules/TensorMechanics/LineElementMaster]
+  [./Reinforcement_block]
+    block = '2 '
+    truss = true
+    area = area
+    displacements = 'disp_x disp_y disp_z'
+    save_in = 'resid_x resid_y resid_z'
+   # add_variables = true
+  [../]
+[]
+
+[Constraints]
+  [./rebar_x2]
+    type = EqualValueEmbeddedConstraint
+    slave = 2
+    master = 1
+    penalty = 31e6
+    variable = 'disp_x'
+    master_variable = 'disp_x'
+    formulation = penalty
+  [../]
+  [./rebar_y2]
+    type = EqualValueEmbeddedConstraint
+    slave = 2
+    master = 1
+    penalty = 31e6
+    variable = 'disp_y'
+    master_variable = 'disp_y'
+    formulation = penalty
+  [../]
+  [./rebar_z2]
+    type = EqualValueEmbeddedConstraint
+    slave = 2
+    master = 1
+    penalty = 31e6
+    variable = 'disp_z'
+    master_variable = 'disp_z'
+    formulation = penalty
+  [../]
+[]
+
+
 [Kernels]
   [./T_td]
     type     = ConcreteThermalTimeIntegration
     variable = T
+    block = 1
   [../]
   [./T_diff]
     type     = ConcreteThermalConduction
     variable = T
+    block = 1
   [../]
 
   [./T_conv]
     type     = ConcreteThermalConvection
     variable = T
     relative_humidity = rh
+    block = 1
   [../]
 
   [./T_adsorption]
     type     = ConcreteLatentHeat
     variable = T
     H = rh
+    block = 1
   [../]
 
   [./rh_td]
     type     = ConcreteMoistureTimeIntegration
     variable = rh
+    block = 1
   [../]
 
   [./rh_diff]
     type     = ConcreteMoistureDiffusion
     variable = rh
     temperature = T
+    block = 1
+  [../]
+  [./heat_dt]
+    type = TimeDerivative
+    variable = T
+    block = 2
+  [../]
+  [./heat_conduction]
+    type = HeatConduction
+    variable = T
+    diffusion_coefficient = 53.0
+    block = 2
   [../]
 
   # [./rh_dehydration]
@@ -229,13 +269,13 @@
   [./ASR_ex]
     type = MaterialRealAux
     variable = ASR_ex
-
+    block = 1
     property = ASR_extent
     execute_on = 'timestep_end'
   [../]
   [./ASR_vstrain]
     type = MaterialRealAux
-
+    block = 1
     variable = ASR_vstrain
     property = ASR_volumetric_strain
     execute_on = 'timestep_end'
@@ -243,7 +283,7 @@
 
   [./ASR_strain_xx]
     type = RankTwoAux
-
+    block = 1
     rank_two_tensor = asr_expansion
     variable = ASR_strain_xx
     index_i = 0
@@ -252,7 +292,7 @@
   [../]
   [./ASR_strain_yy]
     type = RankTwoAux
-
+    block = 1
     rank_two_tensor = asr_expansion
     variable = ASR_strain_yy
     index_i = 1
@@ -261,7 +301,7 @@
   [../]
   [./ASR_strain_zz]
     type = RankTwoAux
-
+    block = 1
     rank_two_tensor = asr_expansion
     variable = ASR_strain_zz
     index_i = 2
@@ -271,7 +311,7 @@
 
   [./ASR_strain_xy]
     type = RankTwoAux
-
+    block = 1
     rank_two_tensor = asr_expansion
     variable = ASR_strain_xy
     index_i = 0
@@ -281,7 +321,7 @@
 
   [./ASR_strain_yz]
     type = RankTwoAux
-
+    block = 1
     rank_two_tensor = asr_expansion
     variable = ASR_strain_yz
     index_i = 1
@@ -291,17 +331,16 @@
 
   [./ASR_strain_zx]
     type = RankTwoAux
-
+    block = 1
     rank_two_tensor = asr_expansion
     variable = ASR_strain_zx
     index_i = 0
     index_j = 2
     execute_on = 'timestep_end'
   [../]
-
   [./thermal_strain_xx]
     type = RankTwoAux
-
+    block = 1
     rank_two_tensor = thermal_expansion
     variable = thermal_strain_xx
     index_i = 0
@@ -310,7 +349,7 @@
   [../]
   [./thermal_strain_yy]
     type = RankTwoAux
-
+    block = 1
     rank_two_tensor = thermal_expansion
     variable = thermal_strain_yy
     index_i = 1
@@ -319,7 +358,7 @@
   [../]
   [./thermal_strain_zz]
     type = RankTwoAux
-
+    block = 1
     rank_two_tensor = thermal_expansion
     variable = thermal_strain_zz
     index_i = 2
@@ -332,7 +371,7 @@
     scalar_type = VolumetricStrain
     rank_two_tensor = total_strain
     variable = volumetric_strain
-
+    block = 1
   [../]
 
   [./k]
@@ -340,12 +379,14 @@
     variable = thermal_conductivity
     property = thermal_conductivity
     execute_on = 'timestep_end'
+    block = 1
   [../]
   [./capacity]
     type = MaterialRealAux
     variable = thermal_capacity
     property = thermal_capacity
     execute_on = 'timestep_end'
+    block = 1
   [../]
 
   [./rh_capacity]
@@ -353,31 +394,51 @@
     variable = moisture_capacity
     property = moisture_capacity
     execute_on = 'timestep_end'
+    block = 1
   [../]
   [./rh_duff]
     type = MaterialRealAux
     variable = humidity_diffusivity
     property = humidity_diffusivity
     execute_on = 'timestep_end'
+    block = 1
   [../]
   [./wc_duff]
     type = MaterialRealAux
     variable = water_content
     property = moisture_content
     execute_on = 'timestep_end'
+    block = 1
   [../]
   [./hydrw_duff]
     type = MaterialRealAux
     variable = water_hydrated
     property = hydrated_water
     execute_on = 'timestep_end'
+    block = 1
   [../]
+
   [damage_index]
     type = MaterialRealAux
+    block = 1
     variable = damage_index
     property = damage_index
     execute_on = timestep_end
   []
+  [./area]
+    type = ConstantAux
+    block = '2'
+    variable = area
+    # value = 3.8e-4
+    value = 1.33e-4
+    execute_on = 'initial timestep_begin'
+  [../]
+  [./axial_stress]
+    type = MaterialRealAux
+    block = '2'
+    variable = axial_stress
+    property = axial_stress
+  [../]
 []
 
 [Functions]
@@ -448,7 +509,6 @@
    0.51619294 0.42006618 0.57821507 0.38872815 0.91466712 0.76971407 0.83652745 0.72598167 0.67781266 0.62393942 0.42048872 0.44964365 0.50351688 0.56523721 0.61443238
    0.64717886 0.716369 0.79944244 '
 
-
     # y = '0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8   0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8
     # 0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8 0.2  0.8  0.2'
     # direction = left
@@ -459,7 +519,7 @@
 
   [./concrete]
     type = PorousMediaBase
-
+    block = 1
     # setup thermal property models and parameters
     # options available: CONSTANT ASCE-1992 KODUR-2004 EUROCODE-2004 KIM-2003
     thermal_conductivity_model =  KODUR-2004
@@ -491,23 +551,13 @@
     temperature = T
   [../]
 
-  # [elasticity_concrete]
-  #   type = ComputeIsotropicElasticityTensor
-  #   youngs_modulus = 37.3e9
-  #   poissons_ratio = 0.22
-  # []
-  # [stress]
-  #   # type = ComputeLinearElasticStress
-  #   type = ComputeFiniteStrainElasticStress
-  #
-  # []
-
   [./creep]
     type = LinearViscoelasticStressUpdate
-    # block = 1
+    block = 1
   [../]
   [./logcreep]
     type = ConcreteLogarithmicCreepModel
+    block = 1
     poissons_ratio = 0.22
     youngs_modulus = 37.3e9
     recoverable_youngs_modulus = 37.3e9
@@ -518,9 +568,39 @@
     temperature = T
     activation_temperature = 23.0
   [../]
+  # [./stress]
+  #   type = ComputeMultipleInelasticStress
+  #   block = 1
+  #   inelastic_models = 'creep'
+  #   # damage_model = damage
+  # [../]
+  #
+  # [elasticity_concrete]
+  #   type = ComputeIsotropicElasticityTensor
+  #   block = 1
+  #   youngs_modulus = 37.3e9
+  #   poissons_ratio = 0.22
+  # []
+  # [stress]
+  #   type = ComputeLinearElasticStress
+  #   # type = ComputeFiniteStrainElasticStress
+  #   block = 1
+  # []
+  # [ASR_damage_concrete]
+  #   type = ConcreteASRMicrocrackingDamage
+  #   block = 1
+  #   residual_youngs_modulus_fraction = 0.5
+  # []
+
+  # [stress_concrete]
+  #   type = ComputeDamageStress
+  #   block = 1
+  #   damage_model = ASR_damage_concrete
+  # []
 
   [ASR_expansion]
     type = ConcreteASREigenstrain
+    block = 1
     expansion_type = Anisotropic
 
     reference_temperature  = 35.0
@@ -554,6 +634,7 @@
 
   [thermal_strain_concrete]
     type = ComputeThermalExpansionEigenstrain
+    block = 1
     temperature = T
     thermal_expansion_coeff = 8.0e-6
     stress_free_temperature = 10.6
@@ -563,22 +644,33 @@
   [ASR_damage_concrete]
     type = ConcreteASRMicrocrackingDamage
     residual_youngs_modulus_fraction = 0.1
+    block = 1
+    # outputs = Exodus
   []
   [./stress]
     type = ComputeMultipleInelasticStress
-    # block = 1
+    block = 1
     inelastic_models = 'creep'
     damage_model = ASR_damage_concrete
+    # outputs = Exodus
   [../]
-  #
 
+  [truss]
+    type = LinearElasticTruss
+    block = '2 '
+    youngs_modulus = 2e11
+    temperature = T
+    thermal_expansion_coeff = 11.3e-6
+    temperature_ref = 10.6
+    # outputs = exodus
+  []
 
 []
 
 [UserObjects]
   [./visco_update]
     type = LinearViscoelasticityManager
-    # block = 1
+    block = 1
     viscoelastic_model = logcreep
   [../]
 []
@@ -609,7 +701,6 @@
   [./T]
     type = FunctionDirichletBC
     variable = T
-    # boundary = '1 2 3 4 5 0'
     boundary = '101 102 103 104 105 106'
     function = ramp1
   [../]
@@ -617,12 +708,29 @@
     type = FunctionDirichletBC
     # type = DirichletBC
     variable = rh
-    # boundary = '1 2 3 4 5 0'
-
     boundary = '101 102 103 104 105 106'
     # value = 0.2
     function = ramp2
   [../]
+  #
+  # [./barx]
+  #   type = DirichletBC
+  #   variable = disp_x
+  #   boundary = '1001 1002'
+  #   value = 0.0
+  # [../]
+  # [./bary]
+  #   type = DirichletBC
+  #   variable = disp_y
+  #   boundary = '1001 1002'
+  #   value = 0.0
+  # [../]
+  # [./barz]
+  #   type = DirichletBC
+  #   variable = disp_z
+  #   boundary = '1001 1002'
+  #   value = 0.0
+  # [../]
 []
 
 [Postprocessors]
@@ -635,99 +743,89 @@
   [./ASR_strain]
     type = ElementAverageValue
     variable = ASR_vstrain
-
+    block = 1
   [../]
   [./ASR_strain_xx]
     type = ElementAverageValue
     variable = ASR_strain_xx
-
+    block = 1
   [../]
   [./ASR_strain_yy]
     type = ElementAverageValue
     variable = ASR_strain_yy
-
+    block = 1
   [../]
   [./ASR_strain_zz]
     type = ElementAverageValue
     variable = ASR_strain_zz
-
+    block = 1
   [../]
   [ASR_ext]
     type = ElementAverageValue
     variable = ASR_ex
-
+    block = 1
   []
   [./vonmises]
     type = ElementAverageValue
     variable = vonmises_stress
-
+    block = 1
   [../]
   [./vstrain]
     type = ElementAverageValue
     variable = volumetric_strain
-
+    block = 1
   [../]
   [./strain_xx]
     type = ElementAverageValue
     variable = strain_xx
-
+    block = 1
   [../]
   [./strain_yy]
     type = ElementAverageValue
     variable = strain_yy
-
+    block = 1
   [../]
   [./strain_zz]
     type = ElementAverageValue
     variable = strain_zz
-
+    block = 1
   [../]
   [./error_ASR]
     type = ElementL2Error
     variable = ASR_vstrain
-
+    block = 1
     function=strain_function
   [../]
   [./error]
     type = ElementL2Error
     variable = volumetric_strain
-
+    block = 1
     function=strain_function
   [../]
   [./temp]
     type = ElementAverageValue
     variable = T
-
-  [../]
-  [./temp_bc]
-    type = SideAverageValue
-    variable = T
-    boundary = 102
+    block = 1
   [../]
   [./humidity]
     type = ElementAverageValue
     variable = rh
-
-  [../]
-  [./humidity_bc]
-    type = SideAverageValue
-    variable = rh
-    boundary = 102
+    block = 1
   [../]
   [./thermal_strain_xx]
     type = ElementAverageValue
     variable = thermal_strain_xx
-
+    block = 1
   [../]
   [./thermal_strain_yy]
     type = ElementAverageValue
     variable = thermal_strain_yy
-
+    block = 1
   [../]
   [./thermal_strain_zz]
     type = ElementAverageValue
     variable = thermal_strain_zz
-
+    block = 1
   [../]
   [./disp_x_101]
     type = SideAverageValue
@@ -819,6 +917,7 @@
     variable = disp_z
     boundary = 106
   [../]
+
   [disp_x_p1_pos]
     type = PointValue
     variable = disp_x
@@ -1004,7 +1103,7 @@
   [disp_z_p5_pos]
     type = PointValue
     variable = disp_z
-    point = '0.235 0.08 0.24'
+    point = '0.235 0.08 -0.24'
   [../]
   [disp_z_p5_neg]
     type = PointValue
@@ -1014,12 +1113,12 @@
   [disp_z_p6_pos]
     type = PointValue
     variable = disp_z
-    point = '-0.235 0.08 0.24'
+    point = '0.235 0.08 0.24'
   [../]
   [disp_z_p6_neg]
     type = PointValue
     variable = disp_z
-    point = '-0.235 0.08 -0.24'
+    point = '-0.235 0.08 0.24'
   [../]
 []
 
@@ -1027,28 +1126,25 @@
   type       = Transient
   solve_type = 'PJFNK'
   line_search = none
-  petsc_options_iname = '-pc_type -ksp_gmres_restart'
-  petsc_options_value = 'lu       101'
-  # start_time = 2419200 #28 days
-  # start_time = 5940846
-  start_time = 14391759
-  # dt = 50000
-  dt = 86400 #1 day in  sec
+  # petsc_options_iname = '-pc_type -ksp_gmres_restart'
+  # petsc_options_value = 'lu       101'
+
+  petsc_options_iname = '-pc_type -pc_hypre_type -ksp_gmres_restart -snes_ls -pc_hypre_boomeramg_strong_threshold'
+  petsc_options_value = 'hypre boomeramg 201 cubic 0.7'
+
+  start_time = 2419200
+  dt = 86400
   automatic_scaling = true
   # end_time = 12960000
   # end_time = 51840000
-  end_time = 38880000 #450 days
+  end_time = 38880000
   # 49766400
   l_max_its  = 50
   l_tol      = 1e-4
   nl_max_its = 10
   nl_rel_tol = 1e-8
   nl_abs_tol = 1e-10
-  # [./TimeStepper]
-  #   type = LogConstantDT
-  #   log_dt = 0.1
-  #   first_dt = 0.1
-  # [../]
+
   # [./TimeStepper]
   #   type = IterationAdaptiveDT
   #   dt = 36000
@@ -1060,11 +1156,16 @@
 []
 
 [Outputs]
-  exodus         = true
+  # exodus         = true
   perf_graph     = true
   csv = true
+  # file_base = asr_concrete_rebar_validation_old2
   [./Console]
     type = Console
+  [../]
+  [./Exo]
+    type = Exodus
+    elemental_as_nodal = true
   [../]
 []
 

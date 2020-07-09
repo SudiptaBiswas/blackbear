@@ -606,10 +606,10 @@
 
     reference_temperature  = 35.0
     temperature_unit = Celsius
-    max_volumetric_expansion = 4.6e-2
+    max_volumetric_expansion = 2.2e-2
 
-    characteristic_time = 12.9
-    latency_time = 20.0
+    characteristic_time = 18.9
+    latency_time = 18.0
     characteristic_activation_energy = 5400.0
     latency_activation_energy = 9400.0
     stress_latency_factor = 1.0
