@@ -1,0 +1,90 @@
+[Tests]
+  issues = '#89'
+  requirement = 'BlackBear shall simulate accelerated alkali-silica reaction experiments on
+                 plain and reinforced concrete blocks, and adequately match experimental data.'
+  design = 'wald2017B.md'
+
+  [./case_A1-111]
+    type = RunApp
+    input = 'asr_concrete_block_rebar.i'
+    cli_args = 'Outputs/file_base=asr_concrete_blockA1-111'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+  [./case_A1-222]
+    type = RunApp
+    input = 'asr_concrete_block_rebar.i'
+    cli_args = 'AuxKernels/areax/value=2.84e-4 AuxKernels/areaz/value=2.84e-4 AuxKernels/areay/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-222'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+  [./Case_A1-211]
+    type = RunApp
+    input = 'asr_concrete_block_rebar.i'
+    cli_args = 'AuxKernels/areax/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-211'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+  [./case_A1-331]
+    type = RunApp
+    input = 'asr_concrete_block_rebar.i'
+    cli_args = 'AuxKernels/areax/value=3.8e-4 AuxKernels/areay/value=3.8e-4 Outputs/file_base=asr_concrete_blockA1-331'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+
+  [./case_A1-321]
+    type = RunApp
+    input = 'asr_concrete_block_rebar.i'
+    cli_args = 'AuxKernels/areax/value=3.8e-4 AuxKernels/areay/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-321'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+
+  [./case_A1-111b]
+    type = RunApp
+    input = 'asr_concrete_block_rebar.i'
+    cli_args = 'Mesh/file=gold/concrete_rebar3xyzb_mesh.e Outputs/file_base=asr_concrete_blockA1-111b'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+  [./case_A1-222b]
+    type = RunApp
+    input = 'asr_concrete_block_rebar.i'
+    cli_args = 'Mesh/file=gold/concrete_rebar3xyzb_mesh.e AuxKernels/areax/value=2.84e-4 AuxKernels/areaz/value=2.84e-4 AuxKernels/areay/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-222b'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+  [./Case_A1-211b]
+    type = RunApp
+    input = 'asr_concrete_block_rebar.i'
+    cli_args = 'Mesh/file=gold/concrete_rebar3xyzb_mesh.e AuxKernels/areax/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-211b'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+  [./case_A1-331b]
+    type = RunApp
+    input = 'asr_concrete_block_rebar.i'
+    cli_args = 'Mesh/file=gold/concrete_rebar3xyzb_mesh.e AuxKernels/areax/value=3.8e-4 AuxKernels/areay/value=3.8e-4 Outputs/file_base=asr_concrete_blockA1-331b'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+
+  [./case_A1-321b]
+    type = RunApp
+    input = 'asr_concrete_block_rebar.i'
+    cli_args = 'Mesh/file=gold/concrete_rebar3xyzb_mesh.e AuxKernels/areax/value=3.8e-4 AuxKernels/areay/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-321b'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+[]

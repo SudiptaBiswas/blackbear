@@ -1,0 +1,47 @@
+[Tests]
+  issues = '#89'
+  requirement = 'BlackBear shall simulate accelerated alkali-silica reaction experiments on
+                 plain and reinforced concrete blocks, and adequately match experimental data.'
+  design = 'wald2017B.md'
+
+  [./case_A3-102]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar_config.i'
+    cli_args = 'Outputs/file_base=asr_concrete_blockA3-102'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+  [./case_A3-102b]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar_config.i'
+    cli_args = 'Mesh/file=gold/concrete_rebar3xzb_mesh.e Outputs/file_base=asr_concrete_blockA3-102'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+  [./case_A3-102-L1]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar_config.i'
+    cli_args = 'Mesh/file=gold/concrete_rebar3xzL1_mesh.e AuxKernels/areax/value=2.01e-4 Outputs/file_base=asr_concrete_blockA3-102'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+  [./case_A3-202-L2]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar_config.i'
+    cli_args = 'Mesh/file=gold/concrete_rebar3xzL2_mesh.e AuxKernels/areaz/value=3.8e-4 AuxKernels/areaz/value=2.01e-4 Outputs/file_base=asr_concrete_blockA3-102'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+  [./case_A3-202-L3]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar_config.i'
+    cli_args = 'Mesh/file=gold/concrete_rebar3xzL3_mesh.e AuxKernels/areaz/value=2.01e-4 Outputs/file_base=asr_concrete_blockA3-102'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+[]

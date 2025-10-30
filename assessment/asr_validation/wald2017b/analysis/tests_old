@@ -1,0 +1,135 @@
+[Tests]
+  issues = '#89'
+  requirement = 'Input files for alkali-silica reaction validation tests shall have valid syntax'
+  design = 'wald2017B.md'
+
+  [./conc_calibration]
+    type = RunApp
+    input = 'asr_concrete_block_calibration.i'
+    check_input = True
+    method = opt
+  [../]
+
+  [./case_A1-001]
+    type = RunApp
+    input = 'asr_concrete_block_uniaxial_rebar.i'
+    cli_args = 'Outputs/file_base=asr_concrete_blockA1-001'
+    check_input = True
+    method = opt
+  [../]
+  [./case_A1-002]
+    type = RunApp
+    input = 'asr_concrete_block_uniaxial_rebar.i'
+    cli_args = 'AuxKernels/area/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-002'
+    check_input = True
+    method = opt
+  [../]
+  [./case_A1-003]
+    type = RunApp
+    input = 'asr_concrete_block_uniaxial_rebar.i'
+    cli_args = 'AuxKernels/area/value=3.8e-4 Outputs/file_base=asr_concrete_blockA1-003'
+    check_input = True
+    method = opt
+  [../]
+
+  [./Case_A1-101]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar.i'
+    cli_args = 'Outputs/file_base=asr_concrete_blockA1-101'
+    check_input = True
+    method = opt
+  [../]
+  [./case_A1-102]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar.i'
+    cli_args = 'AuxKernels/areaz/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-102'
+    check_input = True
+    method = opt
+  [../]
+  [./case_A1-103]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar.i'
+    cli_args = 'AuxKernels/areaz/value=3.8e-4 Outputs/file_base=asr_concrete_blockA1-103'
+    check_input = True
+    method = opt
+  [../]
+  [./case_A1-202]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar.i'
+    cli_args = 'AuxKernels/areax/value=2.84e-4 AuxKernels/areaz/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-202'
+    check_input = True
+    method = opt
+  [../]
+  [./Case_A1-303]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar.i'
+    cli_args = 'AuxKernels/areax/value=3.8e-4 AuxKernels/areaz/value=3.8e-4 Outputs/file_base=asr_concrete_blockA1-303'
+    check_input = True
+    method = opt
+  [../]
+
+  [./case_A1-111]
+    type = RunApp
+    input = 'asr_concrete_block_rebar.i'
+    cli_args = 'Outputs/file_base=asr_concrete_blockA1-111'
+    check_input = True
+    method = opt
+  [../]
+  [./case_A1-222]
+    type = RunApp
+    input = 'asr_concrete_block_rebar.i'
+    cli_args = 'AuxKernels/areax/value=2.84e-4 AuxKernels/areaz/value=2.84e-4 AuxKernels/areay/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-222'
+    check_input = True
+    method = opt
+  [../]
+  [./Case_A1-211]
+    type = RunApp
+    input = 'asr_concrete_block_rebar.i'
+    cli_args = 'AuxKernels/areax/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-211'
+    check_input = True
+    method = opt
+  [../]
+  [./case_A1-331]
+    type = RunApp
+    input = 'asr_concrete_block_rebar.i'
+    cli_args = 'AuxKernels/areax/value=3.8e-4 AuxKernels/areay/value=3.8e-4 Outputs/file_base=asr_concrete_blockA1-331'
+    check_input = True
+    method = opt
+  [../]
+  [./case_A1-321]
+    type = RunApp
+    input = 'asr_concrete_block_rebar.i'
+    cli_args = 'AuxKernels/areax/value=3.8e-4 AuxKernels/areay/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-321'
+    check_input = True
+    method = opt
+  [../]
+
+  [./case_A3-102]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar_config.i'
+    cli_args = 'Outputs/file_base=asr_concrete_blockA3-102'
+    check_input = True
+    method = opt
+  [../]
+  [./case_A3-102-L1]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar_config.i'
+    cli_args = 'Mesh/file=gold/concrete_rebar3xzL1_mesh.e AuxKernels/areax/value=2.01e-4 Outputs/file_base=asr_concrete_blockA3-102-L1'
+    check_input = True
+    method = opt
+  [../]
+  [./case_A3-202-L2]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar_config.i'
+    cli_args = 'Mesh/file=gold/concrete_rebar3xzL2_mesh.e AuxKernels/areaz/value=3.8e-4 AuxKernels/areaz/value=2.01e-4 Outputs/file_base=asr_concrete_blockA3-102-L2'
+    check_input = True
+    method = opt
+  [../]
+  [./case_A3-202-L3]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar_config.i'
+    cli_args = 'Mesh/file=gold/concrete_rebar3xzL3_mesh.e AuxKernels/areaz/value=2.01e-4 Outputs/file_base=asr_concrete_blockA3-102-L3'
+    check_input = true
+    method = opt
+  [../]
+[]

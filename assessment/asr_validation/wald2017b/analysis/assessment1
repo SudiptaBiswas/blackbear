@@ -1,0 +1,88 @@
+[Tests]
+  issues = '#89'
+  requirement = 'BlackBear shall simulate accelerated alkali-silica reaction experiments on
+                 plain and reinforced concrete blocks, and adequately match experimental data.'
+  design = 'wald2017B.md'
+
+  [./Case_A1-101]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar.i'
+    cli_args = 'Outputs/file_base=asr_concrete_blockA1-101'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+  [./case_A1-102]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar.i'
+    cli_args = 'AuxKernels/areaz/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-102'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+  [./case_A1-103]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar.i'
+    cli_args = 'AuxKernels/areaz/value=3.8e-4 Outputs/file_base=asr_concrete_blockA1-103'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+  [./case_A1-202]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar.i'
+    cli_args = 'AuxKernels/areax/value=2.84e-4 AuxKernels/areaz/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-202'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+  [./Case_A1-303]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar.i'
+    cli_args = 'AuxKernels/areax/value=3.8e-4 AuxKernels/areaz/value=3.8e-4 Outputs/file_base=asr_concrete_blockA1-303'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+
+  [./Case_A1-101b]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar.i'
+    cli_args = 'Mesh/file=gold/concrete_rebar3xzb_mesh.e Outputs/file_base=asr_concrete_blockA1-101b'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+  [./case_A1-102b]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar.i'
+    cli_args = 'Mesh/file=gold/concrete_rebar3xzb_mesh.e AuxKernels/areaz/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-102b'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+  [./case_A1-103b]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar.i'
+    cli_args = 'Mesh/file=gold/concrete_rebar3xzb_mesh.e AuxKernels/areaz/value=3.8e-4 Outputs/file_base=asr_concrete_blockA1-103b'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+  [./case_A1-202b]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar.i'
+    cli_args = 'Mesh/file=gold/concrete_rebar3xzb_mesh.e AuxKernels/areax/value=2.84e-4 AuxKernels/areaz/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-202b'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+  [./Case_A1-303b]
+    type = RunApp
+    input = 'asr_concrete_block_biaxial_rebar.i'
+    cli_args = 'Mesh/file=gold/concrete_rebar3xzb_mesh.e AuxKernels/areax/value=3.8e-4 AuxKernels/areaz/value=3.8e-4 Outputs/file_base=asr_concrete_blockA1-303b'
+    max_time = 400000
+    min_parallel = 48
+    method = opt
+  [../]
+[]

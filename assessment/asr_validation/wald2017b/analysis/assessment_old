@@ -1,0 +1,186 @@
+[Tests]
+  issues = '#89'
+  requirement = 'BlackBear shall simulate accelerated alkali-silica reaction experiments on
+                 plain and reinforced concrete blocks, and adequately match experimental data.'
+  design = 'wald2017B.md'
+
+  [./conc_time0]
+    type = 'CSVDiff'
+    input = 'asr_concrete_block_calibration.i'
+    csvdiff = 'asr_concrete_block_calibration_out.csv'
+    min_parallel = 8
+    max_time = 40000
+  [../]
+  [./conc_time1]
+    type = 'CSVDiff'
+    input = 'asr_concrete_block_calibration.i'
+    cli_args = 'Executioner/start_time=5940846 Outputs/file_base=asr_concrete_block_time1'
+    csvdiff = 'asr_concrete_block_time1.csv'
+    min_parallel = 8
+    max_time = 40000
+  [../]
+  [./conc_time2]
+    type = 'CSVDiff'
+    input = 'asr_concrete_block_calibration.i'
+    cli_args = 'Executioner/start_time=14391759 Outputs/file_base=asr_concrete_block_time2'
+    csvdiff = 'asr_concrete_block_time2.csv'
+    min_parallel = 8
+    max_time = 40000
+  [../]
+
+  [./case_A1-001]
+    type = 'CSVDiff'
+    input = 'asr_concrete_block_uniaxial_rebar.i'
+    cli_args = 'Outputs/file_base=asr_concrete_blockA1-001'
+    csvdiff = 'asr_concrete_blockA1-001.csv'
+    max_time = 400000
+    min_parallel = 8
+    method = opt
+  [../]
+  [./case_A1-002]
+    type = 'CSVDiff'
+    input = 'asr_concrete_block_uniaxial_rebar.i'
+    cli_args = 'AuxKernels/area/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-002'
+    csvdiff = 'asr_concrete_blockA1-002.csv'
+    max_time = 400000
+    min_parallel = 8
+    method = opt
+  [../]
+  [./case_A1-003]
+    type = 'CSVDiff'
+    input = 'asr_concrete_block_uniaxial_rebar.i'
+    cli_args = 'AuxKernels/area/value=3.8e-4 Outputs/file_base=asr_concrete_blockA1-003'
+    csvdiff = 'asr_concrete_blockA1-003.csv'
+    max_time = 400000
+    min_parallel = 8
+    method = opt
+  [../]
+  [./Case_A1-101]
+    type = 'CSVDiff'
+    input = 'asr_concrete_block_biaxial_rebar.i'
+    cli_args = 'Outputs/file_base=asr_concrete_blockA1-101'
+    csvdiff = 'asr_concrete_blockA1-101.csv'
+    max_time = 400000
+    min_parallel = 8
+    method = opt
+  [../]
+  [./case_A1-102]
+    type = 'CSVDiff'
+    input = 'asr_concrete_block_biaxial_rebar.i'
+    cli_args = 'AuxKernels/areaz/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-102'
+    csvdiff = 'asr_concrete_blockA1-102.csv'
+    max_time = 400000
+    min_parallel = 8
+    method = opt
+  [../]
+  [./case_A1-103]
+    type = 'CSVDiff'
+    input = 'asr_concrete_block_biaxial_rebar.i'
+    cli_args = 'AuxKernels/areaz/value=3.8e-4 Outputs/file_base=asr_concrete_blockA1-103'
+    csvdiff = 'asr_concrete_blockA1-103.csv'
+    max_time = 400000
+    min_parallel = 8
+    method = opt
+  [../]
+  [./case_A1-202]
+    type = 'CSVDiff'
+    input = 'asr_concrete_block_biaxial_rebar.i'
+    cli_args = 'AuxKernels/areax/value=2.84e-4 AuxKernels/areaz/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-202'
+    csvdiff = 'asr_concrete_blockA1-202.csv'
+    max_time = 400000
+    min_parallel = 8
+    method = opt
+  [../]
+  [./Case_A1-303]
+    type = 'CSVDiff'
+    input = 'asr_concrete_block_biaxial_rebar.i'
+    cli_args = 'AuxKernels/areax/value=3.8e-4 AuxKernels/areaz/value=3.8e-4 Outputs/file_base=asr_concrete_blockA1-303'
+    csvdiff = 'asr_concrete_blockA1-303.csv'
+    max_time = 400000
+    min_parallel = 8
+    method = opt
+  [../]
+
+  [./case_A1-111]
+    type = 'CSVDiff'
+    input = 'asr_concrete_block_rebar.i'
+    cli_args = 'Outputs/file_base=asr_concrete_blockA1-111'
+    csvdiff = 'asr_concrete_blockA1-111.csv'
+    max_time = 400000
+    min_parallel = 8
+    method = opt
+  [../]
+  [./case_A1-222]
+    type = 'CSVDiff'
+    input = 'asr_concrete_block_rebar.i'
+    cli_args = 'AuxKernels/areax/value=2.84e-4 AuxKernels/areaz/value=2.84e-4 AuxKernels/areay/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-222'
+    csvdiff = 'asr_concrete_blockA1-222.csv'
+    max_time = 400000
+    min_parallel = 8
+    method = opt
+  [../]
+  [./Case_A1-211]
+    type = 'CSVDiff'
+    input = 'asr_concrete_block_rebar.i'
+    cli_args = 'AuxKernels/areax/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-211'
+    csvdiff = 'asr_concrete_blockA1-211.csv'
+    max_time = 400000
+    min_parallel = 8
+    method = opt
+  [../]
+  [./case_A1-331]
+    type = 'CSVDiff'
+    input = 'asr_concrete_block_rebar.i'
+    cli_args = 'AuxKernels/areax/value=3.8e-4 AuxKernels/areay/value=3.8e-4 Outputs/file_base=asr_concrete_blockA1-331'
+    csvdiff = 'asr_concrete_blockA1-331.csv'
+    max_time = 400000
+    min_parallel = 8
+    method = opt
+  [../]
+  [./case_A1-321]
+    type = 'CSVDiff'
+    input = 'asr_concrete_block_rebar.i'
+    cli_args = 'AuxKernels/areax/value=3.8e-4 AuxKernels/areay/value=2.84e-4 Outputs/file_base=asr_concrete_blockA1-321'
+    csvdiff = 'asr_concrete_blockA1-321.csv'
+    max_time = 400000
+    min_parallel = 8
+    method = opt
+  [../]
+
+  [./case_A3-102]
+    type = 'CSVDiff'
+    input = 'asr_concrete_block_biaxial_rebar_config.i'
+    cli_args = 'Outputs/file_base=asr_concrete_blockA3-102'
+    csvdiff = 'asr_concrete_blockA3-102.csv'
+    max_time = 400000
+    min_parallel = 8
+    method = opt
+  [../]
+  [./case_A3-102-L1]
+    type = 'CSVDiff'
+    input = 'asr_concrete_block_biaxial_rebar_config.i'
+    cli_args = 'Mesh/file=gold/concrete_rebar3xzL1_mesh.e AuxKernels/areax/value=2.01e-4 Outputs/file_base=asr_concrete_blockA3-102-L1'
+    csvdiff = 'asr_concrete_blockA1-102-L1.csv'
+    max_time = 400000
+    min_parallel = 8
+    method = opt
+  [../]
+  [./case_A3-202-L2]
+    type = 'CSVDiff'
+    input = 'asr_concrete_block_biaxial_rebar_config.i'
+    cli_args = 'Mesh/file=gold/concrete_rebar3xzL2_mesh.e AuxKernels/areaz/value=3.8e-4 AuxKernels/areaz/value=2.01e-4 Outputs/file_base=asr_concrete_blockA3-102-L2'
+    csvdiff = 'asr_concrete_blockA1-102-L2.csv'
+    max_time = 400000
+    min_parallel = 8
+    method = opt
+  [../]
+  [./case_A3-202-L3]
+    type = 'CSVDiff'
+    input = 'asr_concrete_block_biaxial_rebar_config.i'
+    cli_args = 'Mesh/file=gold/concrete_rebar3xzL3_mesh.e AuxKernels/areaz/value=2.01e-4 Outputs/file_base=asr_concrete_blockA3-102-L3'
+    csvdiff = 'asr_concrete_blockA1-102-L3.csv'
+    max_time = 400000
+    min_parallel = 8
+    method = opt
+  [../]
+[]
